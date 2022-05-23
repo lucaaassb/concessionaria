@@ -1,33 +1,37 @@
 import {Body, Controller, Delete, Get, Param, Post, Put} from "@nestjs/common";
+import {Carro} from "./carro.model";
+import {CarrosService} from "./carros.service";
 
 @Controller('carros')
 export class CarrosController {
 
+    constructor(private carrosService: CarrosService) {
+
+    }
+
     @Get()
-    obterTodos(): string {
-        return 'Lista de todos os Carros';
+    obterTodos(): Carro[] {
+        return this.carrosService.obterTodos();
     }
 
     @Get(':id')
-    obterUm(@Param() params): string {
-        return 'Retorna os dados do Carro ${params.id}';
+    obterUm(@Param() params): Carro {
+        return this.carrosService.obterUm(params.id);
     }
 
     @Post()
-    adicionar(@Body() carro): string {
-        console.log(carro);
-        return 'Carro adicionado com sucesso!';
+    adicionar(@Body() carro: Carro) {
+        this.carrosService.criar(carro);
     }
 
     @Put()
-    alterar(@Body() carro): string {
-        console.log(carro);
-        return 'Carro atualizado com sucesso!';
+    alterar(@Body() carro: Carro) {
+        return this.carrosService.alterar(carro);
     }
 
     @Delete(':id')
-    apagar(@Param() params): string {
-        return 'Apaga o carro ${params.id}';
+    apagar(@Param() params) {
+        this.carrosService.deletar(params.id);
     }
 
 }
