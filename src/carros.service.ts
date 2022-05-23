@@ -25,7 +25,7 @@ export class CarrosService {
         return carro;
     }
 
-    deletar(id: number){
+    deletar(id: number) {
         this.carros.pop();
     }
 }
