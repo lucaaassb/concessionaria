@@ -1,33 +1,35 @@
 import { Carro } from './carro.model';
 // @ts-ignore
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 
 // @ts-ignore
 @Injectable
 export class CarrosService {
-  carros: Carro[] = [
-    // new Carro("FIAT TORO", 2020, 89000),
-    // new Carro("ARGO", 2018, 75000),
-    // new Carro("ONYX", 2019, 70000),
-  ];
+  constructor(@InjectModel(Carro) private readonly carroModel: typeof Carro) {}
 
-  obterTodos(): Carro[] {
-    return this.carros;
+  async obterTodos(): Promise<Carro[]> {
+    return this.carroModel.findAll();
   }
 
-  obterUm(id: number): Carro {
-    return this.carros[0];
+  async obterUm(id: number): Promise<Carro> {
+    return this.carroModel.findByPk(id);
   }
 
-  criar(carro: Carro) {
-    this.carros.push(carro);
+  async criar(carro: Carro) {
+    this.carroModel.create(carro);
   }
 
-  alterar(carro: Carro): Carro {
-    return carro;
+  async alterar(carro: Carro): Promise<[number, Carro[]]> {
+    return this.carroModel.update(carro, {
+      where: {
+        id: carro.id,
+      },
+    });
   }
 
-  deletar(id: number) {
-    this.carros.pop();
+  async deletar(id: number) {
+    const carro: Carro = await this.obterUm(id);
+    carro.destroy();
   }
 }

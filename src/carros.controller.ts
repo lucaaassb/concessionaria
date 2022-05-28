@@ -1,37 +1,41 @@
-import {Body, Controller, Delete, Get, Param, Post, Put} from "@nestjs/common";
-import {Carro} from "./carro.model";
-import {CarrosService} from "./carros.service";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { Carro } from './carro.model';
+import { CarrosService } from './carros.service';
 
 @Controller('carros')
 export class CarrosController {
+  constructor(private carrosService: CarrosService) {}
 
-    constructor(private carrosService: CarrosService) {
+  @Get()
+  async obterTodos(): Promise<Carro[]> {
+    return this.carrosService.obterTodos();
+  }
 
-    }
+  @Get(':id')
+  async obterUm(@Param() params): Promise<Carro> {
+    return this.carrosService.obterUm(params.id);
+  }
 
-    @Get()
-    obterTodos(): Carro[] {
-        return this.carrosService.obterTodos();
-    }
+  @Post()
+  async adicionar(@Body() carro: Carro) {
+    this.carrosService.criar(carro);
+  }
 
-    @Get(':id')
-    obterUm(@Param() params): Carro {
-        return this.carrosService.obterUm(params.id);
-    }
+  @Put()
+  async alterar(@Body() carro: Carro): Promise<[number, Carro[]]> {
+    return this.carrosService.alterar(carro);
+  }
 
-    @Post()
-    adicionar(@Body() carro: Carro) {
-        this.carrosService.criar(carro);
-    }
-
-    @Put()
-    alterar(@Body() carro: Carro) {
-        return this.carrosService.alterar(carro);
-    }
-
-    @Delete(':id')
-    apagar(@Param() params) {
-        this.carrosService.deletar(params.id);
-    }
-
+  @Delete(':id')
+  async apagar(@Param() params) {
+    this.carrosService.deletar(params.id);
+  }
 }
